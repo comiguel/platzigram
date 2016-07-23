@@ -8,7 +8,7 @@ module.exports = function (pictures) {
   var el = yo`<div class="container timeline">
   <div id="modalCamara" class="modal center-align">
     <div class="modal-content">
-      <div class="camara-picture" id ="camara-input"></div>
+      <div class="camara-picture" id="camara-input"></div>
       <div class="camara-picture hide" id ="picture-preview"></div>
     </div>
     <div class="modal-footer">
@@ -18,7 +18,7 @@ module.exports = function (pictures) {
       <button class="waves-effect waves-light cyan btn hide" id="uploadButton">
         <i class="fa fa-cloud-upload" aria-hidden="true"></i>
       </button>
-      <button class="waves-effect waves-light red btn hide" id="shoot">
+      <button class="waves-effect waves-light red btn hide" id="cancel-picture">
         <i class="fa fa-times" aria-hidden="true"></i>
       </button>
     </div>
@@ -39,7 +39,7 @@ module.exports = function (pictures) {
     </div>
   </div>
     <div class="row">
-      <div class="col s12 m10 offset-m1 l6 offset-l3 id="picture-cards">
+      <div class="col s12 m10 offset-m1 l6 offset-l3" id="picture-cards">
         ${pictures.map(function(pic) {
           return picture(pic);
         })}

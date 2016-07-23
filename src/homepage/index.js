@@ -25,13 +25,14 @@ page('/', header, asyncLoad, function (ctx, next) {
     cancelPicture.addClass('hide');
     uploadButton.addClass('hide');
     shootButton.removeClass('hide');
-    cameraInput.removeClass('hide');
+    camaraInput.removeClass('hide');
   }
 
   cancelPicture.click(reset);
 
   $('.modal-trigger').leanModal({
     ready: function(){
+      // Webcam.set({ width: 320, height: 240 });
       Webcam.attach('#camara-input');
       shootButton.click(ev => {
         Webcam.snap(data_uri => {
@@ -40,7 +41,8 @@ page('/', header, asyncLoad, function (ctx, next) {
           cancelPicture.removeClass('hide');
           uploadButton.removeClass('hide');
           shootButton.addClass('hide');
-          cameraInput.addClass('hide');
+          camaraInput.addClass('hide');
+          uploadButton.off('click');
           uploadButton.click(() => {
             const pic = {
               url: data_uri,
@@ -55,7 +57,6 @@ page('/', header, asyncLoad, function (ctx, next) {
             $('#picture-cards').prepend(picture(pic));
             reset();
             $('#modalCamara').closeModal();
-
           })
         })
       });
