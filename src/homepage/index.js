@@ -8,7 +8,7 @@ var axios = require('axios');
 var Webcam = require('webcamjs');
 var picture = require('../picture-card');
 
-page('/', header, asyncLoad, function (ctx, next) {
+page('/', header, loading, asyncLoad, function (ctx, next) {
   title('Platzigram');
   var main = document.getElementById('main-container');
 
@@ -57,8 +57,8 @@ page('/', header, asyncLoad, function (ctx, next) {
             $('#picture-cards').prepend(picture(pic));
             reset();
             $('#modalCamara').closeModal();
-          })
-        })
+          });
+        });
       });
     },
     complete: function(){
@@ -66,7 +66,14 @@ page('/', header, asyncLoad, function (ctx, next) {
       reset();
     }
   });
-})
+});
+
+  function loading(ctx, next){
+    var el = document.createElement('div');
+    el.classList.add('loader');
+    document.getElementById('main-container').appendChild(el);
+    next();
+  }
 
 function loadPictures(ctx, next) {
   request
