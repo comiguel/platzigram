@@ -112,12 +112,12 @@ $avatar-size: 48px;
   font-size: 30px;
 }
 
-.card .fa-heart-o {
+.fa-heart-o {
   color: $secondary-color;
 }
 
-.card .fa-heart {
-  color: #f44336;
+.fa-heart {
+  color: $platzigram-red;
   display: none;
 }
 

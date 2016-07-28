@@ -27,7 +27,7 @@ export default function userPageTemplate(user) {
               </div>
               <div class="modal-footer">
                 <div class="btn btn-flat likes">
-                  <i class="fa fa-heart" aria-hidden="true"> ${translate('likes', {likes: picture.likes})}</i>
+                  <i class="fa fa-heart" aria-hidden="true"></i> ${translate('likes', {likes: picture.likes})}
                 </div>
               </div>
             </div>
