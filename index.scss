@@ -19,6 +19,11 @@ body {
   font-family: Montserrat;
 }
 
+.btn.btn-flat {
+  background-color: transparent;
+  box-shadow: none;
+}
+
 .landing {
   margin: 30px auto;
 }
@@ -30,6 +35,13 @@ body {
 .site-footer {
   text-transform: uppercase;
   font-size: 12px;
+}
+
+.loader-container {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .login-box,
@@ -82,6 +94,7 @@ body {
 }
 
 $avatar-size: 48px;
+$avatar-size-big: 150px;
 
 .avatar {
   width: $avatar-size;
@@ -108,7 +121,8 @@ $avatar-size: 48px;
   margin-left: 12px;
 }
 
-.card i {
+.card .heart,
+.card .heart-o, {
   font-size: 30px;
 }
 
@@ -118,16 +132,19 @@ $avatar-size: 48px;
 
 .fa-heart {
   color: $platzigram-red;
-  display: none;
+}
+
+.heart {
+  display: none !important;
 }
 
 .card.liked {
-  .fa-heart {
-    display: block;
+  .heart {
+    display: block !important;
   }
 
-  .fa-heart-o {
-    display: none;
+  .heart-o {
+    display: none !important;
   }
 }
 
@@ -142,6 +159,7 @@ $avatar-size: 48px;
     overflow: hidden;
     margin: 10px;
 
+
     input {
       position: absolute;
       top: 0;
@@ -154,8 +172,8 @@ $avatar-size: 48px;
       opacity: 0;
       filter: alpha(opacity=0);
     }
-  }
 
+  }
 }
 
 #modalCamara {
@@ -252,4 +270,23 @@ $avatar-size: 48px;
   .fa-heart {
     display: inline-block;
   }
+}
+
+.like-heart {
+  font-size: 10em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  transition: all .1s ease;
+  opacity: 0;
+}
+
+.like-heart.liked {
+  color: $platzigram-red;
+  font-size: 12em;
+  display: block;
+  transition: all .5s ease;
+  opacity: 1;
 }
