@@ -1,22 +1,63 @@
 var express = require('express');
+var aws = require('aws-sdk');
 var multer = require('multer');
+var multerS3 = require('multer-s3');
 var ext = require('file-extension');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var expressSession = require('express-session');
+var passport = require('passport');
+var platzigram = require('platzigram-client');
+var auth = require('./auth');
+var config = require('./config');
+var port = process.env.PORT || 3000;
+var s3 = new aws.S3({
+  accessKeyId: config.aws.accessKey,
+  secretAccessKey: config.aws.secretKey
+})
 
-var storage = multer.diskStorage({
-  destination: function(req, file, cb){
-    cb(null, './uploads');
+var client = platzigram.createClient(config.client);
+
+var storage = multerS3({
+  s3: s3,
+  bucket: 'platzigram-comiguel',
+  acl: 'public-read',
+  metadata: function(req, file, cb) {
+    cb(null, {fieldName: file.fieldname})
   },
-  filename: function(req, file, cb){
+  key: function(req, file, cb) {
     cb(null, +Date.now() + '.' + ext(file.originalname));
   }
-});
-var upload = multer({storage: storage}).single('picture');
+})
+
+// var storage = multer.diskStorage({
+//   destination: function(req, file, cb){
+//     cb(null, './uploads');
+//   },
+//   filename: function(req, file, cb){
+//     cb(null, +Date.now() + '.' + ext(file.originalname));
+//   }
+// });
+var upload = multer({ storage: storage }).single('picture');
 
 var app = express();
 
+app.set(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(expressSession({
+  secret: config.secret,
+  resave: false,
+  saveUnitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.set('view engine', 'pug');
-
 app.use(express.static('public'));
+
+passport.use(auth.localStrategy);
+passport.deserializeUser(auth.deserializeUser);
+passport.serializeUser(auth.serializeUser);
 
 app.get('/', function(req, res){
 	res.render('index', { 'title': 'Platzigram' });
@@ -26,9 +67,31 @@ app.get('/signup', function(req, res){
   res.render('index', { 'title': 'Platzigram - Signup' });
 });
 
+app.post('/signup', function (req, res) {
+  var user = req.body;
+  client.saveUser(user, function (err, usr) {
+    if (err) return res.status(500).send(err.message);
+
+    res.redirect('/signin')
+  })
+});
+
 app.get('/signin', function(req, res){
   res.render('index', { 'title': 'Platzigram - Signin' });
 });
+
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/signin'
+}));
+
+function ensureAuth (req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+
+  res.status(401).send({ error: 'not authenticated'});
+}
 
 app.get('/api/pictures', function(req, res){
   var pictures = [
@@ -57,7 +120,7 @@ app.get('/api/pictures', function(req, res){
   setTimeout(() => res.send(pictures), 2000);
 });
 
-app.post('/api/pictures', function (req, res){
+app.post('/api/pictures', ensureAuth, function (req, res){
   upload(req, res, function(err){
     if (err) {
       return res.send(500, 'Error uploading file');
@@ -114,7 +177,7 @@ app.get('/:username/:id', function (req, res){
   res.render('index', {title: `Platzigram - ${req.params.username}`});
 });
 
-app.listen(3000, function(err){
+app.listen(port, function(err){
 	if(err) return console.log('Hubo un error'), process.exit(1);
 
 	console.log('Platzigram escuchando en el puerto 3000');
