@@ -10,8 +10,8 @@ export default function userPageTemplate(user) {
           <img class="responsive-img circle" src="${user.avatar}"/>
         </div>
         <div class="col s12 m10 offset-m1 l6 left-align">
-          <h2 class="hide-on-large-only center-align">${user.username}</h2>
-          <h2 class="hide-on-med-and-down left-align">${user.username}</h2>
+          <h2 class="hide-on-large-only center-align">${user.name}</h2>
+          <h2 class="hide-on-med-and-down left-align">${user.name}</h2>
         </div>
       </div>
       <div class="row">
@@ -19,7 +19,7 @@ export default function userPageTemplate(user) {
           return yo`<div class="col s12 m6 l4">
             <a href="/${user.username}/${picture.id}" class="picture-container">
               <img src="${picture.src}" class="picture" />
-              <div class="likes"><i class="fa fa-heart" aria-hidden="true"></i>${picture.likes}</div>
+              <div class="likes"><i class="fa fa-heart" aria-hidden="true"></i>${picture.likes || 0}</div>
             </a>
             <div id="modal${picture.id}" class="modal modal-fixed-footer">
               <div class="modal-content">
@@ -27,7 +27,7 @@ export default function userPageTemplate(user) {
               </div>
               <div class="modal-footer">
                 <div class="btn btn-flat likes">
-                  <i class="fa fa-heart" aria-hidden="true"></i> ${translate('likes', {likes: picture.likes})}
+                  <i class="fa fa-heart" aria-hidden="true"></i> ${translate('likes', {likes: picture.likes || 0})}
                 </div>
               </div>
             </div>

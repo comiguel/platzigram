@@ -4,11 +4,15 @@ var template = require('./template');
 var title = require('title');
 var request = require('superagent');
 var header = require('../header');
+var picture = require('../picture-card');
 var axios = require('axios');
 var Webcam = require('webcamjs');
-var picture = require('../picture-card');
+var io = require('socket.io-client');
+var utils = require('../utils');
 
-page('/', header, loading, asyncLoad, function (ctx, next) {
+var socket = io.connect('http://localhost:5151');
+
+page('/', utils.loadAuth, header, loading, asyncLoad, function (ctx, next) {
   title('Platzigram');
   var main = document.getElementById('main-container');
 
@@ -66,6 +70,15 @@ page('/', header, loading, asyncLoad, function (ctx, next) {
       reset();
     }
   });
+});
+
+socket.on('image', function (image) {
+  console.log('New Image');
+  console.log(image);
+  var picturesEl = document.getElementById('picture-cards');
+  var first = picturesEl.firstChild;
+  var img = picture(image);
+  picturesEl.insertBefore(img, first);
 });
 
   function loading(ctx, next){
